@@ -16,8 +16,6 @@ runs:
       run: |
         ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} .
         echo "::set-output name=exit_code::$(echo $exists)"
-      env:
-        token: ${{ secrets.GH_TOKEN }}
       shell: bash
 
 
