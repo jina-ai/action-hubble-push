@@ -75,9 +75,9 @@ then
   else
     echo exists, only push to latest-gpu
     jina hub push --force $exec_uuid --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
+  fi
 else
   echo no $DOCKERFILE_GPU, skip pushing the gpu version
-  fi
 fi
 
 exit_code=0
