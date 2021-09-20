@@ -1,6 +1,4 @@
 #!/bin/bash
-set -ex
-
 sudo apt-get update && sudo apt-get install -y jq curl
 
 JINA_VERSION=$(curl -L -s "https://pypi.org/pypi/jina/json" \
