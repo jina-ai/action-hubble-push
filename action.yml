@@ -1,0 +1,23 @@
+name: 'Push To Hubble'
+description: 'push the executor to Hubble'
+inputs:
+  git_tag:
+    description: 'the versioning tag of the executor'
+    required: true
+    default: 'v0.1'
+outputs:
+  exit_code:
+    description: 'exit successfully with 0'
+    value: ${{ steps.push_exec.outputs.exit_code }}
+runs:
+  using: "composite"
+  steps:
+    - id: push_exec
+      run: |
+        ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} .
+        echo "::set-output name=exit_code::$(echo $exists)"
+      env:
+        token: ${{ secrets.GH_TOKEN }}
+      shell: bash
+
+
