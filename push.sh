@@ -66,8 +66,6 @@ then
   echo WARNING, no git tag!
 elif [ -f $DOCKERFILE_GPU ]
 then
-  echo no $DOCKERFILE_GPU, skip pushing the gpu version
-else
   echo git gpu tag = $GIT_TAG_GPU
   jina hub pull jinahub+docker://$exec_name/$GIT_TAG_GPU
   exists=$?
@@ -77,6 +75,8 @@ else
   else
     echo exists, only push to latest-gpu
     jina hub push --force $exec_uuid --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
+else
+  echo no $DOCKERFILE_GPU, skip pushing the gpu version
   fi
 fi
 
