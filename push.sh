@@ -39,8 +39,6 @@ echo UUID=`head -c 3 <(echo $exec_uuid)`
 echo "::add-mask::$exec_secret"
 echo SECRET=`head -c 3 <(echo $exec_secret)`
 
-rm secrets.json
-
 # we only push to a tag once,
 # if it doesn't exist
 echo git tag = $GIT_TAG
