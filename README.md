@@ -6,3 +6,5 @@ One need to specify the input `git_tag` and set the following secrets in the rep
 
 - `UUDI`: uuid of the executor
 - `SECRECT`: secret of the executor
+
+If you want to release the GPU version, make sure you have `Dockerfile.gpu` in your root folder
