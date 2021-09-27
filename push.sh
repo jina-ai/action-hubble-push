@@ -26,6 +26,7 @@ cd $PUSH_DIR
 
 pip install yq
 
+exec_name=`yq -r .name manifest.yml`
 echo executor name is $exec_name
 
 version=`jina -vf`
