@@ -6,15 +6,13 @@ One need to specify the input `git_tag` and set the following secrets in the rep
 
 - `SECRET`: secret of the executor
 
-Example `cd.yml`:
+You need to pass this to the action like so:
 
-```yaml
-...
+```yml
       - name: push to Hubble
-        id: push_exec_action
-        uses: jina-ai/action-hubble-push@v4
+        uses: jina-ai/action-hubble-push@v3
         env:
-          git_tag: ${{ steps.previous_tag_action.outputs.tag }}    
+          exec_secret: ${{ secrets.SECRET }}
 ```
 
 If you want to release the GPU version, make sure you have `Dockerfile.gpu` in your root folder
