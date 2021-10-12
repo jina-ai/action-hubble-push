@@ -35,8 +35,8 @@ echo jina version $version
 echo "::add-mask::$exec_name"
 echo NAME=`head -c 3 <(echo $exec_name)`
 
-echo "::add-mask::$exec_secret"
-echo SECRET=`head -c 3 <(echo $exec_secret)`
+echo "::add-mask::$SECRET"
+echo SECRET=`head -c 3 <(echo $SECRET)`
 
 # we only push to a tag once,
 # if it doesn't exist
@@ -52,10 +52,10 @@ else
   exists=$?
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG
-    jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
+    jina hub push --force $exec_name --secret $SECRET . -t $GIT_TAG -t latest
   else
     echo exists, only push to latest
-    jina hub push --force $exec_name --secret $exec_secret .
+    jina hub push --force $exec_name --secret $SECRET .
   fi
 fi
 
@@ -71,10 +71,10 @@ then
   exists=$?
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG_GPU
-    jina hub push --force $exec_name --secret $exec_secret -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
+    jina hub push --force $exec_name --secret $SECRET -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
   else
     echo exists, only push to latest-gpu
-    jina hub push --force $exec_name --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
+    jina hub push --force $exec_name --secret $SECRET -t latest-gpu -f $DOCKERFILE_GPU .
   fi
 else
   echo no $DOCKERFILE_GPU, skip pushing the gpu version
