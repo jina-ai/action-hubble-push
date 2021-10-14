@@ -15,5 +15,5 @@ runs:
     - id: push_exec
       run: |
         ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} .
-        echo "::set-output name=exit_code::$(echo $exists)"
+        echo "::set-output name=exit_code::$(echo $exit_code)"
       shell: bash
