@@ -1,13 +1,6 @@
 #!/bin/bash
 sudo apt-get update && sudo apt-get install -y jq curl
 
-JINA_VERSION=$(curl -L -s "https://pypi.org/pypi/jina/json" \
-  |  jq  -r '.releases | keys | .[]
-    | select(contains("dev") | not)
-    | select(startswith("2."))' \
-  | sort -V | tail -1)
-pip install git+https://github.com/jina-ai/jina.git@v${JINA_VERSION}#egg=jina[standard]
-
 GIT_TAG=$1
 PUSH_DIR=$2
 DOCKERFILE_GPU=Dockerfile.gpu
@@ -29,18 +22,30 @@ pip install yq
 exec_name=`yq -r .name manifest.yml`
 echo executor name is $exec_name
 
-version=`jina -vf`
-echo jina version $version
+echo NAME=$exec_name
 
-echo "::add-mask::$exec_name"
-echo NAME=`head -c 3 <(echo $exec_name)`
+if [ -z "$exec_secret" ]
+then
+  echo no secret provided. Add the secret to your repo
+  exit_code=1
+  exit 1
+fi
 
 echo "::add-mask::$exec_secret"
 echo SECRET=`head -c 3 <(echo $exec_secret)`
 
+JINA_VERSION=$(curl -L -s "https://pypi.org/pypi/jina/json" \
+  |  jq  -r '.releases | keys | .[]
+    | select(contains("dev") | not)
+    | select(startswith("2."))' \
+  | sort -V | tail -1)
+pip install git+https://github.com/jina-ai/jina.git@v${JINA_VERSION}#egg=jina[standard]
+
+version=`jina -vf`
+echo jina version $version
+
 # we only push to a tag once,
 # if it doesn't exist
-echo git tag = $GIT_TAG
 
 # push cpu version
 if [ -z "$GIT_TAG" ]
@@ -53,9 +58,21 @@ else
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG
     jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
+    push_success=$?
+    if [[ $push_success != 0 ]]; then
+      echo push failed. Check error
+      exit_code=1
+      exit 1
+    fi
   else
     echo exists, only push to latest
     jina hub push --force $exec_name --secret $exec_secret .
+    push_success=$?
+    if [[ $push_success != 0 ]]; then
+      echo push failed. Check error
+      exit_code=1
+      exit 1
+    fi
   fi
 fi
 
@@ -72,9 +89,21 @@ then
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG_GPU
     jina hub push --force $exec_name --secret $exec_secret -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
+    push_success=$?
+    if [[ $push_success != 0 ]]; then
+      echo push failed. Check error
+      exit_code=1
+      exit 1
+    fi
   else
     echo exists, only push to latest-gpu
     jina hub push --force $exec_name --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
+    push_success=$?
+    if [[ $push_success != 0 ]]; then
+      echo push failed. Check error
+      exit_code=1
+      exit 1
+    fi
   fi
 else
   echo no $DOCKERFILE_GPU, skip pushing the gpu version
