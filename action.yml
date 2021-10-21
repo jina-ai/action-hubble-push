@@ -4,7 +4,6 @@ inputs:
   git_tag:
     description: 'the versioning tag of the executor'
     required: true
-    default: 'v0.1'
 outputs:
   exit_code:
     description: 'exit successfully with 0'
