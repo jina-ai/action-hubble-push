@@ -10,7 +10,7 @@ You need to pass this to the action like so:
 
 ```yml
       - name: push to Hubble
-        uses: jina-ai/action-hubble-push@v3
+        uses: jina-ai/action-hubble-push@v6
         env:
           exec_secret: ${{ secrets.SECRET }}
 ```
