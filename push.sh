@@ -27,7 +27,7 @@ echo NAME=$exec_name
 if [ -z "$exec_secret" ]
 then
   echo no secret provided. Add the secret to your repo
-  exec_secret="test"
+  exec_secret="test-secret"
   # exit_code=1
   # exit 1
 fi
