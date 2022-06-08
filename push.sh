@@ -26,10 +26,16 @@ echo NAME=$exec_name
 
 if [ -z "$exec_secret" ]
 then
-  echo no secret provided. Add the secret to your repo
-  exec_secret="test-secret"
+  echo no executor secret provided
+  exec_secret="dummy-secret"
   # exit_code=1
   # exit 1
+fi
+
+if [ -z "$jinahub_token" ]
+then
+  echo no jinahub token provided
+  jinahub_token="dummy-token"
 fi
 
 echo "::add-mask::$exec_secret"
