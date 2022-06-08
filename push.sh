@@ -28,8 +28,6 @@ if [ -z "$exec_secret" ]
 then
   echo no executor secret provided
   exec_secret="dummy-secret"
-  # exit_code=1
-  # exit 1
 fi
 
 if [ -z "$jinahub_token" ]
