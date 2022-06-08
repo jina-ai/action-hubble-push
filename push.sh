@@ -35,8 +35,8 @@ fi
 echo "::add-mask::$exec_secret"
 echo SECRET=`head -c 3 <(echo $exec_secret)`
 
-echo "::add-mask::$jina_auth_token"
-echo JINA_AUTH_TOKEN=`head -c 3 <(echo $jina_auth_token)`
+echo "::add-mask::$jinahub_token"
+echo JINA_AUTH_TOKEN=`head -c 3 <(echo $jinahub_token)`
 
 JINA_VERSION=$(curl -L -s "https://pypi.org/pypi/jina/json" \
   |  jq  -r '.releases | keys | .[]
@@ -61,7 +61,7 @@ else
   exists=$?
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG
-    JINA_AUTH_TOKEN=$jina_auth_token jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
@@ -70,7 +70,7 @@ else
     fi
   else
     echo exists, only push to latest
-    JINA_AUTH_TOKEN=$jina_auth_token jina hub push --force $exec_name --secret $exec_secret .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
@@ -92,7 +92,7 @@ then
   exists=$?
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG_GPU
-    JINA_AUTH_TOKEN=$jina_auth_token jina hub push --force $exec_name --secret $exec_secret -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
@@ -101,7 +101,7 @@ then
     fi
   else
     echo exists, only push to latest-gpu
-    JINA_AUTH_TOKEN=$jina_auth_token jina hub push --force $exec_name --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
