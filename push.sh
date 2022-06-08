@@ -27,6 +27,7 @@ echo NAME=$exec_name
 if [ -z "$exec_secret" ]
 then
   echo no secret provided. Add the secret to your repo
+  exec_secret="test"
   # exit_code=1
   # exit 1
 fi
@@ -35,6 +36,7 @@ echo "::add-mask::$exec_secret"
 echo SECRET=`head -c 3 <(echo $exec_secret)`
 
 echo "::add-mask::$jina_auth_token"
+echo JINA_AUTH_TOKEN=`head -c 3 <(echo $jina_auth_token)`
 
 JINA_VERSION=$(curl -L -s "https://pypi.org/pypi/jina/json" \
   |  jq  -r '.releases | keys | .[]
