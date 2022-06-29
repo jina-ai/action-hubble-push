@@ -4,6 +4,10 @@ inputs:
   git_tag:
     description: 'the versioning tag of the executor'
     required: true
+  push_dir:
+    description: 'the directory with the executor source code'
+    required: false
+    default: '.'
 outputs:
   exit_code:
     description: 'exit successfully with 0'
@@ -13,6 +17,6 @@ runs:
   steps:
     - id: push_exec
       run: |
-        ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} .
+        ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} ${{ inputs.push_dir }}
         echo "::set-output name=exit_code::$(echo $exit_code)"
       shell: bash
