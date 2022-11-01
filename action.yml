@@ -15,6 +15,11 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: debug
+      shell: bash
+      run: |
+        echo git_tag ${{ inputs.git_tag}}
+        echo push_dir ${{ inputs.push_dir }}
     - id: push_exec
       run: |
         ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} ${{ inputs.push_dir }}
