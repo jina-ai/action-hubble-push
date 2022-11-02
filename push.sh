@@ -19,7 +19,7 @@ cd $PUSH_DIR
 
 pip install yq
 
-exec_name=`yq -r .name manifest.yml`
+exec_name=`yq -r .metas.name config.yml`
 echo executor name is $exec_name
 
 echo NAME=$exec_name
