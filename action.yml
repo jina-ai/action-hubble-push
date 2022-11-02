@@ -13,13 +13,8 @@ outputs:
     description: 'exit successfully with 0'
     value: ${{ steps.push_exec.outputs.exit_code }}
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
-    - name: debug
-      shell: bash
-      run: |
-        echo git_tag ${{ inputs.git_tag}}
-        echo push_dir ${{ inputs.push_dir }}
     - id: push_exec
       run: |
         ${{ github.action_path }}/push.sh ${{ inputs.git_tag }} ${{ inputs.push_dir }}
