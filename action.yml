@@ -13,7 +13,7 @@ outputs:
     description: 'exit successfully with 0'
     value: ${{ steps.push_exec.outputs.exit_code }}
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - id: push_exec
       run: |

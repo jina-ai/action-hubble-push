@@ -19,7 +19,7 @@ cd $PUSH_DIR
 
 pip install yq
 
-exec_name=`yq -r .name manifest.yml`
+exec_name=`yq -r .metas.name config.yml`
 echo executor name is $exec_name
 
 echo NAME=$exec_name
@@ -63,14 +63,31 @@ else
   echo git tag = $GIT_TAG
   jina hub pull jinahub+docker://$exec_name/$GIT_TAG
   exists=$?
+
+  # push to existing executor
   if [[ $exists == 1 ]]; then
-    echo does NOT exist, pushing to latest and $GIT_TAG
-    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
-    push_success=$?
-    if [[ $push_success != 0 ]]; then
-      echo push failed. Check error
-      exit_code=1
-      exit 1
+    # check if executor exists
+    jina hub pull jinahub+docker://$exec_name
+    executor_exists=$?
+    # try initial push
+    if [[ $executor_exists == 1 ]]; then
+      echo $exec_name does NOT exist, initial push
+      JINA_AUTH_TOKEN=$jinahub_token jina hub push --secret $exec_secret . -t $GIT_TAG -t latest
+      push_success=$?
+      if [[ $push_success != 0 ]]; then
+        echo push failed. Check error
+        exit_code=1
+        exit 1
+      fi
+    else
+      echo does NOT exist, pushing to latest and $GIT_TAG
+      JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
+      push_success=$?
+      if [[ $push_success != 0 ]]; then
+        echo push failed. Check error
+        exit_code=1
+        exit 1
+      fi
     fi
   else
     echo exists, only push to latest
@@ -82,6 +99,10 @@ else
       exit 1
     fi
   fi
+fi
+
+if [[ $push_success == 0 ]]; then
+  echo push $exec_name successed
 fi
 
 # push gpu version
