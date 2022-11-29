@@ -20,7 +20,7 @@ cd $PUSH_DIR
 pip install yq
 
 exec_name=`yq -r .metas.name config.yml`
-if [ -z "$exec_name" ]
+if [ -z "$exec_name" ] || [ "$exec_name" == "null" ]
 then
   echo manifest.yml is deprecated. Please merge it into config.yml
   exec_name=`yq -r .name manifest.yml`
