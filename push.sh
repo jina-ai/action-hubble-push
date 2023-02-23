@@ -3,6 +3,8 @@ sudo apt-get update && sudo apt-get install -y jq curl
 
 GIT_TAG=$1
 PUSH_DIR=$2
+PLATFORM=$3
+PLATFORM_ARGS=""
 DOCKERFILE_GPU=Dockerfile.gpu
 
 exit_code=1
@@ -41,6 +43,14 @@ then
   jinahub_token="dummy-token"
 fi
 
+if [ -z "$PLATFORM" ]
+then
+  echo platform not specified
+else
+  echo platform specified to be $PLATFORM
+  PLATFORM_ARGS="$PLATFORM_ARGS --platform $PLATFORM"
+fi
+
 echo "::add-mask::$exec_secret"
 echo SECRET=`head -c 3 <(echo $exec_secret)`
 
@@ -77,7 +87,7 @@ else
     # try initial push
     if [[ $executor_exists == 1 ]]; then
       echo $exec_name does NOT exist, initial push
-      JINA_AUTH_TOKEN=$jinahub_token jina hub push --secret $exec_secret . -t $GIT_TAG -t latest
+      JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --secret $exec_secret$ . -t $GIT_TAG -t latest
       push_success=$?
       if [[ $push_success != 0 ]]; then
         echo push failed. Check error
@@ -86,7 +96,7 @@ else
       fi
     else
       echo does NOT exist, pushing to latest and $GIT_TAG
-      JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
+      JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
       push_success=$?
       if [[ $push_success != 0 ]]; then
         echo push failed. Check error
@@ -96,7 +106,7 @@ else
     fi
   else
     echo exists, only push to latest
-    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --force $exec_name --secret $exec_secret .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
