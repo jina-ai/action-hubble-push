@@ -31,10 +31,9 @@ echo executor name is $exec_name
 
 echo NAME=$exec_name
 
-if [ -z "$exec_secret" ]
+if [ ! -z "$exec_secret" ]
 then
-  echo no executor secret provided
-  exec_secret="dummy-secret"
+  echo Warning: exec_secret is deprecated. Please use jinahub_token instead
 fi
 
 if [ -z "$jinahub_token" ]
@@ -50,9 +49,6 @@ else
   echo platform specified to be $PLATFORM
   PLATFORM_ARGS="$PLATFORM_ARGS --platform $PLATFORM"
 fi
-
-echo "::add-mask::$exec_secret"
-echo SECRET=`head -c 3 <(echo $exec_secret)`
 
 echo "::add-mask::$jinahub_token"
 echo JINA_AUTH_TOKEN=`head -c 3 <(echo $jinahub_token)`
@@ -87,7 +83,7 @@ else
     # try initial push
     if [[ $executor_exists == 1 ]]; then
       echo $exec_name does NOT exist, initial push
-      JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --secret $exec_secret$ . -t $GIT_TAG -t latest
+      JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --verbose . -t $GIT_TAG -t latest
       push_success=$?
       if [[ $push_success != 0 ]]; then
         echo push failed. Check error
@@ -96,7 +92,7 @@ else
       fi
     else
       echo does NOT exist, pushing to latest and $GIT_TAG
-      JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --force $exec_name --secret $exec_secret . -t $GIT_TAG -t latest
+      JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --verbose --force $exec_name . -t $GIT_TAG -t latest 
       push_success=$?
       if [[ $push_success != 0 ]]; then
         echo push failed. Check error
@@ -106,7 +102,7 @@ else
     fi
   else
     echo exists, only push to latest
-    JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --force $exec_name --secret $exec_secret .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push$PLATFORM_ARGS --verbose --force $exec_name .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
@@ -132,7 +128,7 @@ then
   exists=$?
   if [[ $exists == 1 ]]; then
     echo does NOT exist, pushing to latest and $GIT_TAG_GPU
-    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push --verbose --force $exec_name -t $GIT_TAG_GPU -t latest-gpu -f $DOCKERFILE_GPU .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
@@ -141,7 +137,7 @@ then
     fi
   else
     echo exists, only push to latest-gpu
-    JINA_AUTH_TOKEN=$jinahub_token jina hub push --force $exec_name --secret $exec_secret -t latest-gpu -f $DOCKERFILE_GPU .
+    JINA_AUTH_TOKEN=$jinahub_token jina hub push --verbose --force $exec_name -t latest-gpu -f $DOCKERFILE_GPU .
     push_success=$?
     if [[ $push_success != 0 ]]; then
       echo push failed. Check error
