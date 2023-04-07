@@ -56,6 +56,7 @@ echo JINA_AUTH_TOKEN=`head -c 3 <(echo $jinahub_token)`
 JINA_VERSION=$(curl -L -s "https://pypi.org/pypi/jina/json" \
   |  jq  -r '.releases | keys | .[]
     | select(contains("dev") | not)
+    | select(contains("a") | not)
     | select(startswith("3."))' \
   | sort -V | tail -1)
 pip install git+https://github.com/jina-ai/jina.git@v${JINA_VERSION}#egg=jina[standard]
